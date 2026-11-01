@@ -10,7 +10,7 @@ const V = require('./lib/vault');
 const W = require('./lib/workspace');
 const C = require('./lib/context');
 
-const argWs = (() => { const i = process.argv.indexOf('--workspace'); return i > 0 ? process.argv[i + 1] : process.env.CHITTA_WORKSPACE; })();
+const argWs = (() => { const i = process.argv.indexOf('--workspace'); return i > 0 ? process.argv[i + 1] : (process.env.AIODIZE_WORKSPACE || process.env.CHITTA_WORKSPACE); })();
 const config = W.loadConfig();
 const ws = W.getWs(config, argWs || '');
 const root = ws.vault;
@@ -131,7 +131,7 @@ function handle(msg) {
   const { id, method, params = {} } = msg;
   if (method === 'initialize') {
     client = (params.clientInfo && params.clientInfo.name) || 'agent';
-    if (!process.env.CHITTA_TEST) try { fs.writeFileSync(path.join(W.DATA, ws.id, 'mcp-seen.json'), JSON.stringify({ client, ts: Date.now() })); } catch {} // shown on the Settings page
+    if (!process.env.AIODIZE_TEST && !process.env.CHITTA_TEST) try { fs.writeFileSync(path.join(W.DATA, ws.id, 'mcp-seen.json'), JSON.stringify({ client, ts: Date.now() })); } catch {} // shown on the Settings page
     return { protocolVersion: params.protocolVersion || '2025-06-18', capabilities: { tools: {}, prompts: {} },
       serverInfo: { name: 'aiodize-' + ws.id, version: require('./package.json').version }, instructions: W.instructionsText(ws, W.readRules(ws.id)) +
         "\n\nAiodize is this person's brain for AI on their device. Before starting work in a folder, call get_context with that folder. When you finish meaningful work, call log_work (what changed, status, next steps)." };

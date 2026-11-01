@@ -19,7 +19,7 @@ assert.deepEqual(V.extractTags(fm.body), ['growth']);
 assert.equal(V.parseFrontmatter(V.serializeFrontmatter({ a: '1', b: ['x', 'y'] }) + 'body').props.b[1], 'y');
 
 // path safety
-const root = fs.mkdtempSync(path.join(os.tmpdir(), 'chitta-'));
+const root = fs.mkdtempSync(path.join(os.tmpdir(), 'aiodize-'));
 assert.throws(() => V.safePath(root, '../outside.md'));
 assert.throws(() => V.safePath(root, 'notes/x.exe'));
 assert.ok(V.safePath(root, 'Projects/A.md').startsWith(root));
@@ -114,7 +114,7 @@ const input = [
 ].map(x => JSON.stringify(x)).join('\n') + '\n';
 const mcpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'aiodize-mcp-'));
 fs.writeFileSync(path.join(mcpDir, 'config.json'), JSON.stringify({ ravi: mcpDir, workspaces: [{ id: 'clients', name: 'Clients', vault: root, folders: ['*'], fallback: true }] }));
-const r = spawnSync(process.execPath, [path.join(__dirname, 'mcp.js'), '--workspace', 'clients'], { input, encoding: 'utf8', env: Object.assign({}, process.env, { CHITTA_TEST: '1', AIODIZE_CONFIG: path.join(mcpDir, 'config.json'), AIODIZE_DATA: path.join(mcpDir, 'data') }) });
+const r = spawnSync(process.execPath, [path.join(__dirname, 'mcp.js'), '--workspace', 'clients'], { input, encoding: 'utf8', env: Object.assign({}, process.env, { AIODIZE_TEST: '1', AIODIZE_CONFIG: path.join(mcpDir, 'config.json'), AIODIZE_DATA: path.join(mcpDir, 'data') }) });
 fs.rmSync(mcpDir, { recursive: true, force: true });
 const out = r.stdout.trim().split('\n').map(l => JSON.parse(l));
 assert.equal(out.length, 3, r.stderr);
@@ -134,7 +134,7 @@ import('./web/charts.js').then(({ pack }) => {
   }
   // onboarding pieces run in their own sandbox (fake home, data, config), so nothing real is touched
   const sb = fs.mkdtempSync(path.join(os.tmpdir(), 'aiodize-setup-'));
-  const env = Object.assign({}, process.env, { AIODIZE_TMP: sb, AIODIZE_HOME: path.join(sb, 'home'), AIODIZE_DATA: path.join(sb, 'data'), AIODIZE_CONFIG: path.join(sb, 'config.json'), CHITTA_TEST: '1' });
+  const env = Object.assign({}, process.env, { AIODIZE_TMP: sb, AIODIZE_HOME: path.join(sb, 'home'), AIODIZE_DATA: path.join(sb, 'data'), AIODIZE_CONFIG: path.join(sb, 'config.json'), AIODIZE_TEST: '1' });
   const t = spawnSync(process.execPath, [path.join(__dirname, 'test-setup.js')], { env, encoding: 'utf8' });
   fs.rmSync(sb, { recursive: true, force: true });
   if (t.status !== 0) { console.error(t.stdout, t.stderr); process.exit(1); }

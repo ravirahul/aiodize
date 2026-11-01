@@ -5,7 +5,7 @@ const { app, BrowserWindow, Tray, Menu, shell, nativeImage } = require('electron
 const path = require('path');
 const http = require('http');
 
-const PORT = Number(process.env.CHITTA_PORT || 4848), URL = `http://127.0.0.1:${PORT}/`;
+const PORT = Number(process.env.AIODIZE_PORT || process.env.CHITTA_PORT || 4848), URL = `http://127.0.0.1:${PORT}/`;
 const ICON = path.join(__dirname, '..', 'extension', 'icon.png');
 let win = null, tray = null, quitting = false;
 

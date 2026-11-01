@@ -112,4 +112,10 @@ assert.ok(out[1].result.capabilities.prompts);
 assert.deepEqual(out[2].result.prompts.map(p => p.name), ['load_context', 'log_this_work', 'set_up_aiodize']);
 assert.ok(out[3].result.messages[0].content.text.includes('Project: Alpha'));
 assert.ok(out[4].error);
+// --- names from before the rename are upgraded: chitta-<ws> servers and chitta CLAUDE.md blocks ---
+put(path.join(home, '.cursor', 'mcp.json'), JSON.stringify({ mcpServers: { 'chitta-work': { command: 'node', args: ['x/mcp.js', '--workspace', 'work'] }, mine: { command: 'y' } } }));
+Apps.run('connect', ['cursor'], config.workspaces);
+assert.deepEqual(Object.keys(JSON.parse(rd(path.join(home, '.cursor', 'mcp.json'))).mcpServers).sort(), ['aiodize-work', 'mine']);
+const up = W.mergeClaudeMd('# Mine\n\n<!-- chitta:start (managed by Chitta, edit WORKSPACE.md instead) -->\nold\n<!-- chitta:end -->\n', 'new rules');
+assert.equal(up.action, 'update'); assert.ok(up.text.startsWith('# Mine') && up.text.includes('aiodize:rules:start') && !/chitta|old/.test(up.text));
 console.log('setup checks passed');

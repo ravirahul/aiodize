@@ -23,7 +23,7 @@ const SETUP_PROMPT = 'Set up Aiodize for me. Start with the setup_status tool, l
 const { execFileSync, execFile } = require('child_process');
 const today = () => V.dayOf(Date.now());
 
-const PORT = Number(process.env.CHITTA_PORT || 4848);
+const PORT = Number(process.env.AIODIZE_PORT || process.env.CHITTA_PORT || 4848);
 const TOKEN = crypto.randomBytes(16).toString('hex');
 const WEB = path.join(__dirname, 'web');
 let config = W.loadConfig();
@@ -150,7 +150,7 @@ const server = http.createServer(async (req, res) => {
       if (file === 'index.html') body = body.replace('__TOKEN__', TOKEN);
       return send(res, 200, body, MIME[path.extname(full)] || 'text/plain');
     }
-    if ((req.headers['x-chitta-token'] || url.searchParams.get('t')) !== TOKEN) return send(res, 401, { error: 'Missing token' });
+    if ((req.headers['x-aiodize-token'] || req.headers['x-chitta-token'] || url.searchParams.get('t')) !== TOKEN) return send(res, 401, { error: 'Missing token' });
     const wsId = url.searchParams.get('ws');
     if (p === '/api/favicon') {
       const f = Fav.cached(String(url.searchParams.get('host') || ''));

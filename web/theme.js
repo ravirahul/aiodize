@@ -35,7 +35,10 @@
     root.dataset.theme = base; root.dataset.accent = accent; // observers repaint the canvases on these
     return { base: base, accent: accent };
   }
-  var s = {}; try { s.b = localStorage.getItem('chitta-theme'); s.a = localStorage.getItem('chitta-accent');
-    if (!localStorage.getItem('aiodize-brand')) { localStorage.setItem('aiodize-brand', '1'); if (!s.a || s.a === 'amber') { s.a = 'iodine'; localStorage.setItem('chitta-accent', 'iodine'); } } } catch (e) {}
-  window.ChittaTheme = { BASES: BASES, ACCENTS: ACCENTS, apply: apply, accentOf: accentOf, current: apply(s.b, s.a) };
+  // settings saved under the old name (Chitta) carry over once
+  try { var old = []; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('chitta-') === 0) old.push(k); }
+    old.forEach(function (k) { var n = 'aiodize-' + k.slice(7); if (localStorage.getItem(n) === null) localStorage.setItem(n, localStorage.getItem(k)); }); } catch (e) {}
+  var s = {}; try { s.b = localStorage.getItem('aiodize-theme'); s.a = localStorage.getItem('aiodize-accent');
+    if (!localStorage.getItem('aiodize-brand')) { localStorage.setItem('aiodize-brand', '1'); if (!s.a || s.a === 'amber') { s.a = 'iodine'; localStorage.setItem('aiodize-accent', 'iodine'); } } } catch (e) {}
+  window.AiodizeTheme = { BASES: BASES, ACCENTS: ACCENTS, apply: apply, accentOf: accentOf, current: apply(s.b, s.a) };
 })();

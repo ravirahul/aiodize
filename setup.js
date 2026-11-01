@@ -7,7 +7,7 @@ const http = require('http');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const PORT = Number(process.env.CHITTA_PORT || 4848), URL = `http://127.0.0.1:${PORT}/`;
+const PORT = Number(process.env.AIODIZE_PORT || process.env.CHITTA_PORT || 4848), URL = `http://127.0.0.1:${PORT}/`;
 const major = Number(process.versions.node.split('.')[0]);
 if (major < 20) { console.error(`Aiodize needs Node.js 20 or newer (this is ${process.versions.node}). Get it from https://nodejs.org and run this again.`); process.exit(1); }
 

@@ -4,15 +4,15 @@ import { heatmap2d, skyline, bubbles, makeTip, dayKey, addDays, longDate } from 
 import { MindmapView, SunburstView, GlobeView, SolarView, Minimap } from './views.js';
 import { ST, COLOR_VAR, SHAPES, STAGES, DEFAULT_STATUSES } from './status.js';
 
-const TOKEN = document.querySelector('meta[name="chitta-token"]').content;
+const TOKEN = document.querySelector('meta[name="aiodize-token"]').content;
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const store = { get: k => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
 async function api(p, opts = {}) {
-  const r = await fetch(p, Object.assign({}, opts, { headers: Object.assign({ 'X-Chitta-Token': TOKEN, 'Content-Type': 'application/json' }, opts.headers) }));
+  const r = await fetch(p, Object.assign({}, opts, { headers: Object.assign({ 'X-Aiodize-Token': TOKEN, 'Content-Type': 'application/json' }, opts.headers) }));
   const j = await r.json().catch(() => ({}));
-  if (r.status === 401 && !sessionStorage.getItem('chitta-reloaded')) { sessionStorage.setItem('chitta-reloaded', '1'); location.reload(); } // server restarted: new token
-  if (r.ok) sessionStorage.removeItem('chitta-reloaded');
+  if (r.status === 401 && !sessionStorage.getItem('aiodize-reloaded')) { sessionStorage.setItem('aiodize-reloaded', '1'); location.reload(); } // server restarted: new token
+  if (r.ok) sessionStorage.removeItem('aiodize-reloaded');
   if (!r.ok) throw new Error(j.error || r.statusText);
   return j;
 }
@@ -41,9 +41,9 @@ const titleOf = p => (S.notes.find(n => n.path === p) || {}).title || (p || '').
 
 // ---------- theme ----------
 // The theme is set before paint by the inline script in index.html; this keeps the picker in step.
-const TH = window.ChittaTheme;
+const TH = window.AiodizeTheme;
 function setTheme(base, accent) {
-  TH.current = TH.apply(base, accent); store.set('chitta-theme', TH.current.base); store.set('chitta-accent', TH.current.accent);
+  TH.current = TH.apply(base, accent); store.set('aiodize-theme', TH.current.base); store.set('aiodize-accent', TH.current.accent);
   drawThemePicker(); if (S.view === 'activity') renderActivity();
   setTimeout(legend, 50); // graph re-reads colours on the attribute change first
 }
@@ -94,9 +94,9 @@ document.querySelectorAll('#colorSeg button').forEach(b => b.onclick = () => {
 $('#tTags').onchange = e => { graph.setOptions({ showTags: e.target.checked }); legend(); };
 $('#tInsp').onchange = e => { graph.setOptions({ showInsp: e.target.checked }); legend(); };
 $('#tExt').onchange = e => { graph.setOptions({ showExternal: e.target.checked }); legend(); };
-S.labels = store.get('chitta-labels') !== '0';
+S.labels = store.get('aiodize-labels') !== '0';
 $('#tLabels').checked = S.labels; graph.opts.labels = S.labels;
-$('#tLabels').onchange = e => { S.labels = e.target.checked; store.set('chitta-labels', S.labels ? '1' : '0'); graph.setOptions({ labels: S.labels }); for (const v of Object.values(VIEWS)) v.wake(); };
+$('#tLabels').onchange = e => { S.labels = e.target.checked; store.set('aiodize-labels', S.labels ? '1' : '0'); graph.setOptions({ labels: S.labels }); for (const v of Object.values(VIEWS)) v.wake(); };
 function moreOpen(open) { $('#morePanel').hidden = !open; $('#moreBtn').setAttribute('aria-expanded', String(open)); }
 $('#moreBtn').onclick = () => moreOpen($('#morePanel').hidden);
 document.addEventListener('pointerdown', e => { if (!$('#morePanel').hidden && !e.target.closest('.morepick')) moreOpen(false); });
@@ -120,7 +120,7 @@ $('#gMenuBtn').onclick = () => gMenu(!$('.gbar').classList.contains('open'));
 $('#gCollapse').addEventListener('click', e => { if (e.target.closest('button')) gMenu(false); });
 document.addEventListener('pointerdown', e => { if ($('.gbar').classList.contains('open') && !e.target.closest('#gCollapse, #gMenuBtn')) gMenu(false); });
 function syncFit() { const v = activeView(), fit = v.isFit ? v.isFit() : false; if ($('#fitBtn').hidden !== fit) $('#fitBtn').hidden = fit; }
-let gview = VIEWS[store.get('chitta-gview')] ? store.get('chitta-gview') : 'neurons';
+let gview = VIEWS[store.get('aiodize-gview')] ? store.get('aiodize-gview') : 'neurons';
 const activeView = () => gview === 'neurons' ? graph : VIEWS[gview];
 function syncViewBar() {
   const v = activeView();
@@ -128,7 +128,7 @@ function syncViewBar() {
   $('#vHint').textContent = v.hint ? v.hint() : '';
 }
 function setGView(v) {
-  gview = v; store.set('chitta-gview', v);
+  gview = v; store.set('aiodize-gview', v);
   $('#v-graph').dataset.mode = v;
   $('#graph').hidden = v !== 'neurons';
   for (const [k, view] of Object.entries(VIEWS)) view.show(k === v);
@@ -285,7 +285,7 @@ $('#wsMenu').onkeydown = e => {
 document.addEventListener('pointerdown', e => { if (!$('#wsMenu').hidden && !e.target.closest('.wspick')) wsMenu(false); });
 async function switchWs(id) {
   if (id === S.ws && S.notes.length) return;
-  S.ws = id; store.set('chitta-ws', id); drawWs(); closePanel();
+  S.ws = id; store.set('aiodize-ws', id); drawWs(); closePanel();
   if (!$('#timebar').hidden) closeTimeline();
   const [g, notes, board] = await Promise.all([api(q('/api/graph')), api(q('/api/notes')), api(q('/api/board'))]);
   S.notes = notes; applyBoard(board); graph.setData(g); legend(); feedViews(true);
@@ -321,7 +321,7 @@ function openWindow(p) {
   if (!w) toast('The browser blocked the new window. Allow pop-ups for this page.');
 }
 function openPreferred(p) {
-  const how = store.get('chitta-open') || 'panel';
+  const how = store.get('aiodize-open') || 'panel';
   if (how === 'window') return openWindow(p);
   if (how === 'obsidian') { graph.select(p); location.href = 'obsidian://open?path=' + encodeURIComponent(absPath(p)); return; }
   if (how === 'vscode') { graph.select(p); location.href = 'vscode://file/' + absPath(p); return; }
@@ -378,10 +378,10 @@ async function drawProjectStrip(p) {
   const counts = {}; let tok = 0, sess = 0, cost = 0;
   for (const [k, v] of Object.entries(series)) { if (k >= first) { counts[k] = v[0]; tok += v[0]; cost += v[1]; sess += v[2]; } }
   box.hidden = false;
-  const closed = store.get('chitta-pact') === '1';
+  const closed = store.get('aiodize-pact') === '1';
   box.classList.toggle('collapsed', closed);
   box.innerHTML = `<button class="h" type="button" aria-expanded="${!closed}"><span><b>Claude work, 6 months</b></span><span>${Math.round(sess)} session${Math.round(sess) === 1 ? '' : 's'} · ${fmtTok(tok)} tokens · $${cost.toFixed(2)}</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="pbody2"></div>`;
-  box.querySelector('.h').onclick = () => { const c = !box.classList.contains('collapsed'); box.classList.toggle('collapsed', c); box.querySelector('.h').setAttribute('aria-expanded', !c); store.set('chitta-pact', c ? '1' : '0'); };
+  box.querySelector('.h').onclick = () => { const c = !box.classList.contains('collapsed'); box.classList.toggle('collapsed', c); box.querySelector('.h').setAttribute('aria-expanded', !c); store.set('aiodize-pact', c ? '1' : '0'); };
   const inner = box.querySelector('.pbody2');
   if (!tok) { inner.innerHTML = '<p class="empty">No Claude sessions touched this project\'s folder yet. Add its folder to the note\'s "folder:" line to track it.</p>'; return; }
   inner.append(heatmap2d(counts, first, today, { tip, fmt: n => fmtTok(n) + ' tokens', onPick: k => { A.scope = p; A.day = k; if (S.solo) return; go('activity'); } }));
@@ -409,9 +409,9 @@ $('#pwin').onclick = () => S.open && openWindow(S.open.path);
 // Resizable note panel: drag its left edge (or focus it and use the arrow keys). Width is remembered.
 function setPanelWidth(px) {
   const w = Math.round(Math.max(340, Math.min(window.innerWidth * 0.8, px)));
-  $('#panel').style.width = w + 'px'; store.set('chitta-pw', w); graph.resize();
+  $('#panel').style.width = w + 'px'; store.set('aiodize-pw', w); graph.resize();
 }
-{ const w = +store.get('chitta-pw'); if (w) $('#panel').style.width = Math.min(w, window.innerWidth * 0.8) + 'px'; }
+{ const w = +store.get('aiodize-pw'); if (w) $('#panel').style.width = Math.min(w, window.innerWidth * 0.8) + 'px'; }
 $('#presize').onpointerdown = e => {
   e.preventDefault(); try { $('#presize').setPointerCapture(e.pointerId); } catch {} document.body.classList.add('resizing');
   const move = ev => setPanelWidth(window.innerWidth - ev.clientX);
@@ -572,7 +572,7 @@ $('#boardEdit2').onclick = openBoardDlg;
 
 // ---------- Activity: 2D/3D map, token bubbles, day detail ----------
 const tip = makeTip();
-const A = Object.assign({ scope: '_all', metric: 0, mode: '2d', range: 90 }, (() => { try { return JSON.parse(store.get('chitta-act')) || {}; } catch { return {}; } })(),
+const A = Object.assign({ scope: '_all', metric: 0, mode: '2d', range: 90 }, (() => { try { return JSON.parse(store.get('aiodize-act')) || {}; } catch { return {}; } })(),
   { day: null, data: null, dataWs: null, chart: null, bub: null });
 const syncSeg = () => {
   for (const [sel, key, v] of [['#actMetric', 'm', A.metric], ['#actMode', 'mode', A.mode], ['#actRange', 'r', A.range]])
@@ -600,7 +600,7 @@ const RANGE_LABEL = { 7: 'last 7 days', 30: 'last 30 days', 90: 'last 90 days', 
 // One period drives everything on this page: the map, the 3D skyline and the bubbles.
 function renderActivity() {
   const d = A.data; if (!d) return;
-  store.set('chitta-act', JSON.stringify({ scope: A.scope, metric: A.metric, mode: A.mode, range: A.range }));
+  store.set('aiodize-act', JSON.stringify({ scope: A.scope, metric: A.metric, mode: A.mode, range: A.range }));
   const [mName, fmt] = METRIC[A.metric];
   const series = d.series[A.scope] || {};
   const today = dayKey(new Date()), first = addDays(today, -(A.range - 1));
@@ -670,10 +670,10 @@ function drawNotes() {
   const f = $('#nfilter').value.toLowerCase();
   const groups = {};
   for (const n of S.notes) if (!f || n.title.toLowerCase().includes(f) || n.path.toLowerCase().includes(f)) (groups[n.category] = groups[n.category] || []).push(n);
-  const isOpen = g => f || store.get('chitta-ng-' + S.ws + '-' + g) !== '0';
+  const isOpen = g => f || store.get('aiodize-ng-' + S.ws + '-' + g) !== '0';
   $('#notelist').innerHTML = Object.keys(groups).sort().map(g => `<details class="ngroup" data-g="${esc(g)}"${isOpen(g) ? ' open' : ''}><summary><span class="dotc" style="background:${graph.catColor(g)}"></span>${esc(g)} <span class="cnt">${groups[g].length}</span></summary>${groups[g].sort((a, b) => (b.type === 'project') - (a.type === 'project') || a.title.localeCompare(b.title)).map(n =>
     `<button class="nrow" type="button" data-p="${esc(n.path)}">${noteIcon(n)}<span class="t">${esc(n.title)}</span><span class="s">${n.status ? statusIcon(n.status, true) : ''}</span></button>`).join('')}</details>`).join('') || '<p class="empty">No notes match.</p>';
-  $('#notelist').querySelectorAll('details').forEach(d => d.ontoggle = () => { if (!f) store.set('chitta-ng-' + S.ws + '-' + d.dataset.g, d.open ? '1' : '0'); });
+  $('#notelist').querySelectorAll('details').forEach(d => d.ontoggle = () => { if (!f) store.set('aiodize-ng-' + S.ws + '-' + d.dataset.g, d.open ? '1' : '0'); });
   $('#notelist').querySelectorAll('.nrow').forEach(b => b.onclick = () => openPreferred(b.dataset.p));
 }
 $('#nfilter').oninput = drawNotes;
@@ -706,7 +706,7 @@ $('#copyCmd').onclick = () => navigator.clipboard.writeText($('#mcpCmd').textCon
 const es = new EventSource('/api/events?t=' + TOKEN);
 // After a server restart the old token is refused: reload once the server is back, so the page picks up a fresh one.
 es.onerror = () => setTimeout(async () => {
-  const r = await fetch('/api/state', { headers: { 'X-Chitta-Token': TOKEN } }).catch(() => null);
+  const r = await fetch('/api/state', { headers: { 'X-Aiodize-Token': TOKEN } }).catch(() => null);
   if (r && r.status === 401) location.reload();
 }, 1500);
 es.addEventListener('graph', async e => {
@@ -831,24 +831,24 @@ function setRail(mini, keep = true) {
   $('#app').classList.toggle('mini', mini);
   $('#logoBtn').setAttribute('aria-label', mini ? 'Expand sidebar' : 'Aiodize, go to the graph');
   $('#logoBtn').title = mini ? 'Expand sidebar' : '';
-  if (keep) store.set('chitta-rail', mini ? '1' : '0');
+  if (keep) store.set('aiodize-rail', mini ? '1' : '0');
   if (mini) wsMenu(false);
   setTimeout(() => graph.resize(), 220);
 }
 // small windows start with the slim sidebar (unless you expand it)
 const narrow = matchMedia('(max-width:1000px)');
-narrow.addEventListener('change', e => setRail(e.matches || store.get('chitta-rail') === '1', false));
+narrow.addEventListener('change', e => setRail(e.matches || store.get('aiodize-rail') === '1', false));
 document.addEventListener('pointerdown', e => { const p = $('#pactions'); if (p.classList.contains('open') && !e.target.closest('#pactions')) { p.classList.remove('open'); $('#pMoreBtn')?.setAttribute('aria-expanded', 'false'); } });
 $('#railBtn').onclick = () => { setRail(true); $('#logoBtn').focus(); };
 $('#logoBtn').onclick = () => $('#app').classList.contains('mini') ? setRail(false) : go('graph');
 document.querySelectorAll('.nav a, a.navlike').forEach(a => { if (!a.title) a.title = a.textContent.trim(); });
-setRail(store.get('chitta-rail') === '1' || narrow.matches, false);
+setRail(store.get('aiodize-rail') === '1' || narrow.matches, false);
 const CHEV = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 document.querySelectorAll('.view:not(#v-settings) .card').forEach((card, i) => { // settings cards stay open
   const h = card.querySelector('h2.ch'); if (!h) return;
   let head = h.parentElement;
   if (head === card) { head = document.createElement('div'); head.className = 'cardhead'; card.insertBefore(head, h); head.append(h); }
-  const id = 'chitta-card-' + (card.closest('.view') || {}).id + '-' + i;
+  const id = 'aiodize-card-' + (card.closest('.view') || {}).id + '-' + i;
   const b = document.createElement('button'); b.type = 'button'; b.className = 'ctoggle'; b.innerHTML = CHEV;
   const set = c => { card.classList.toggle('collapsed', c); b.setAttribute('aria-expanded', !c); b.setAttribute('aria-label', (c ? 'Expand ' : 'Collapse ') + h.textContent); store.set(id, c ? '1' : '0'); };
   b.onclick = () => { set(!card.classList.contains('collapsed')); if (S.view === 'activity' && !card.classList.contains('collapsed')) renderActivity(); };
@@ -856,9 +856,9 @@ document.querySelectorAll('.view:not(#v-settings) .card').forEach((card, i) => {
 });
 
 // ---------- settings ----------
-$('#openSel').value = store.get('chitta-open') || 'panel';
-$('#openSel').onchange = e => { store.set('chitta-open', e.target.value); toast('Notes will open in ' + e.target.selectedOptions[0].textContent); };
-$('#startWs').onchange = e => store.set('chitta-startws', e.target.value);
+$('#openSel').value = store.get('aiodize-open') || 'panel';
+$('#openSel').onchange = e => { store.set('aiodize-open', e.target.value); toast('Notes will open in ' + e.target.selectedOptions[0].textContent); };
+$('#startWs').onchange = e => store.set('aiodize-startws', e.target.value);
 const COLORS = ['marigold', 'rose', 'teal', 'blue', 'green', 'violet'];
 let wsDraft = [];
 // settings sections: one tab at a time, remembered; arrow keys move between tabs
@@ -867,7 +867,7 @@ function setTab(t) {
   if (!tabs.some(b => b.dataset.tab === t)) t = 'look';
   for (const b of tabs) { const on = b.dataset.tab === t; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; $('#sp-' + b.dataset.tab).hidden = !on; }
   $('#setTitle').textContent = t === 'about' ? 'About & guide' : tabs.find(b => b.dataset.tab === t).textContent;
-  store.set('chitta-settab', t);
+  store.set('aiodize-settab', t);
 }
 $('#setTabs').onclick = e => { const b = e.target.closest('[role="tab"]'); if (b) setTab(b.dataset.tab); };
 $('#setTabs').onkeydown = e => {
@@ -875,12 +875,12 @@ $('#setTabs').onkeydown = e => {
   const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; let j = d ? (i + d + tabs.length) % tabs.length : e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : -1;
   if (j < 0) return; e.preventDefault(); setTab(tabs[j].dataset.tab); tabs[j].focus();
 };
-setTab(store.get('chitta-settab') || 'look');
+setTab(store.get('aiodize-settab') || 'look');
 async function loadSettings() {
   $('#aboutData').textContent = 'Your vaults: ' + S.workspaces.map(w => `${w.name} in ${w.vault}`).join(' · ') + '.';
   api('/api/state').then(st => { if (st.version) $('#aboutVer').textContent = `Version ${st.version} · local preview`; }).catch(() => {});
   $('#startWs').innerHTML = '<option value="">The one I used last</option>' + S.workspaces.map(w => `<option value="${w.id}">${esc(w.name)}</option>`).join('');
-  $('#startWs').value = store.get('chitta-startws') || '';
+  $('#startWs').value = store.get('aiodize-startws') || '';
   const [mcp, cfg] = await Promise.all([api('/api/mcp'), api('/api/workspaces')]);
   $('#mcpList').innerHTML = mcp.map(m => `<div class="mcprow">
     <div class="mh">${wsIcon(S.workspaces.find(w => w.id === m.id) || m)}<b>${esc(m.name)}</b><code>${esc(m.server)}</code>
@@ -964,7 +964,7 @@ addEventListener('keydown', e => {
     return;
   }
   api('/api/setup').then(s => { if (!s.done) openOnboarding(); }).catch(() => {}); // first run
-  const pick = store.get('chitta-startws') || store.get('chitta-ws');
+  const pick = store.get('aiodize-startws') || store.get('aiodize-ws');
   show(location.hash.slice(1) || 'graph');
   setGView(gview);
   await switchWs(S.workspaces.some(w => w.id === pick) ? pick : S.workspaces[0].id);
@@ -1089,7 +1089,7 @@ async function appsOp(op, ids) {
 }
 $('#appsOff').onclick = async () => { const list = await api('/api/apps'); appsOp('disconnect', list.filter(a => a.connected).map(a => a.id)); };
 $('#packBtn').onclick = async () => {
-  const id = $('#packWs').value, r = await fetch(`/api/contextpack?ws=${encodeURIComponent(id)}`, { headers: { 'X-Chitta-Token': TOKEN } });
+  const id = $('#packWs').value, r = await fetch(`/api/contextpack?ws=${encodeURIComponent(id)}`, { headers: { 'X-Aiodize-Token': TOKEN } });
   if (!r.ok) return toast('Could not export');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([await r.text()], { type: 'text/markdown' }));
   a.download = `aiodize-${id}-context-${new Date().toISOString().slice(0, 10)}.md`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
