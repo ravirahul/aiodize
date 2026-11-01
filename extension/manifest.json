@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "aiodize",
   "display_name": "Aiodize",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Your brain for AI, on your device. Gives Claude your notes, projects, rules and work history from Aiodize.",
   "long_description": "Aiodize keeps your notes, projects and ideas as plain Markdown on your computer. This extension connects Claude Desktop to one Aiodize workspace: Claude reads your context before it works and logs what changed after. Everything stays on your device. Needs Aiodize installed (node setup.js) and its folder set below.",
   "author": {

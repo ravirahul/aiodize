@@ -1,6 +1,6 @@
 {
   "name": "aiodize",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Aiodize: a local-first brain for you and your AI agents. Markdown notes, graph views, workspaces with rules, Mission Control, MCP.",
   "scripts": {
     "setup": "node setup.js",
