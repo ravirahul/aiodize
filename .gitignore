@@ -1,0 +1,12 @@
+# Your data never goes in the repo
+data/
+vaults/
+workspaces.json
+*.local.md
+# Build output
+dist/
+node_modules/
+desktop/out/
+*.log
+.DS_Store
+Thumbs.db

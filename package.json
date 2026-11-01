@@ -1,0 +1,65 @@
+{
+  "name": "aiodize",
+  "version": "0.8.0",
+  "description": "Aiodize: a local-first brain for you and your AI agents. Markdown notes, graph views, workspaces with rules, Mission Control, MCP.",
+  "scripts": {
+    "setup": "node setup.js",
+    "start": "node server.js",
+    "test": "node test.js",
+    "desktop": "electron .",
+    "dist": "electron-builder --win nsis --publish never"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "aiodize": "setup.js"
+  },
+  "main": "desktop/main.js",
+  "author": "Ravi Rahul",
+  "license": "MIT",
+  "homepage": "https://aiodize.bliink.in",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ravirahul/aiodize.git"
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "in.bliink.aiodize",
+    "productName": "Aiodize",
+    "copyright": "Copyright 2026 Ravi Rahul",
+    "directories": {
+      "output": "dist/desktop",
+      "buildResources": "desktop/build"
+    },
+    "asar": false,
+    "files": [
+      "**/*",
+      "!data/**",
+      "!vaults/**",
+      "!workspaces.json",
+      "!dist/**",
+      "!*.local.md",
+      "!test*.js",
+      "!brand/preview.html",
+      "!.playwright-mcp/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "desktop/build/icon.png",
+      "artifactName": "Aiodize-Setup-${version}.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Aiodize",
+      "runAfterFinish": true
+    }
+  }
+}

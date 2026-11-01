@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+  <linearGradient id="rim" x1="20" y1="14" x2="104" y2="108" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6A6280"/><stop offset=".5" stop-color="#3A3447"/><stop offset="1" stop-color="#1A1721"/></linearGradient>
+  <linearGradient id="wall" x1="0" y1="70" x2="0" y2="120" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1C1924"/><stop offset="1" stop-color="#08070B"/></linearGradient>
+  <radialGradient id="hollow" cx="64" cy="62" r="36" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#523c71"/><stop offset=".6" stop-color="#1d1628"/><stop offset="1" stop-color="#07060A"/></radialGradient>
+  <linearGradient id="lip" x1="0" y1="29" x2="0" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+  <filter id="gl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<polygon points="64 19 95 27 114 53 113 87 93 113 58 119 28 105 13 75 24 41" fill="url(#wall)"/>
+<polygon points="64 10 95 18 114 44 113 78 93 104 58 110 28 96 13 66 24 32" fill="url(#rim)"/>
+<polyline points="16 64 26 33 64 12 93 19" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="64 29 85 35 97 52 96 75 83 91 60 94 40 85 31 64 39 43" fill="url(#hollow)"/>
+<polygon points="64 29 85 35 97 52 96 75 83 91 60 94 40 85 31 64 39 43" fill="url(#lip)"/>
+<g filter="url(#gl)">
+  <path d="M64 62Q56 52 62 42M64 62Q78 63 85 52M64 62Q80 67 80 78M64 62Q67 77 56 82M64 62Q55 64 44 54" fill="none" stroke="#B884FF" stroke-width="2.4" stroke-linecap="round"/>
+  <g fill="#B884FF"><circle cx="62" cy="42" r="2.6"/><circle cx="85" cy="52" r="2.6"/><circle cx="80" cy="78" r="2.6"/><circle cx="56" cy="82" r="2.6"/><circle cx="44" cy="54" r="2.6"/><circle cx="64" cy="62" r="5.6"/></g>
+</g>
+<circle cx="64" cy="62" r="2.3" fill="#fff"/>
+</svg>

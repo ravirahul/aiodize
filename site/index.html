@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aiodize · your brain for AI, on your device</title>
+<meta name="description" content="Aiodize keeps every idea, note and piece of work your AI touches on your computer, backed up, and ready for whichever AI you use next. Free and open source.">
+<meta property="og:title" content="Aiodize · your brain for AI, on your device">
+<meta property="og:description" content="Your notes as a living graph that Claude, Cursor, Codex and other AI apps read before they work and update after. Local, backed up, open source.">
+<meta property="og:image" content="https://aiodize.bliink.in/assets/solar.jpg">
+<meta name="theme-color" content="#0C0B10">
+<link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one long dark page. Hero with the product itself as the picture, three promises, how it works, a tour of real screens, privacy, FAQ. */
+:root{
+  --bg:#0C0B10; --panel:#15131B; --raised:#1D1A25; --line:#2A2633; --fg:#ECE9F2; --muted:#9B95A8; --glow:#B884FF; --glow-ink:#CBA6FF; --on-glow:#140B22;
+  --f-head:"Familjen Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:var(--glow-ink)}
+img{max-width:100%;display:block}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:2px solid var(--glow);outline-offset:3px;border-radius:6px}
+
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.bar{display:flex;align-items:center;gap:24px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.brand img{width:30px;height:30px}
+.wm{font:650 22px/1 var(--f-head);letter-spacing:-.035em;white-space:nowrap}
+.wm .i{position:relative;display:inline-block}
+.wm .i i{position:absolute;left:50%;top:.2em;width:.2em;height:.2em;border-radius:50%;transform:translateX(-50%);background:var(--glow);box-shadow:0 0 .2em var(--glow),0 0 .55em var(--glow)}
+nav{display:flex;gap:22px;margin-left:auto;font-size:15px}
+nav a{color:var(--muted);text-decoration:none}
+nav a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:11px 18px;font:600 15px/1 var(--f-body);text-decoration:none;border:1px solid var(--line);color:var(--fg);background:var(--raised);white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--glow);border-color:var(--glow);color:var(--on-glow);box-shadow:0 8px 30px -8px color-mix(in srgb,var(--glow) 70%,transparent)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn svg{width:17px;height:17px}
+
+.hero{padding-block:72px 40px;position:relative}
+.hero::before{content:"";position:absolute;inset:-120px 0 auto;height:620px;background:radial-gradient(50% 55% at 50% 30%,color-mix(in srgb,var(--glow) 16%,transparent),transparent 70%);pointer-events:none;z-index:-1}
+.hero h1{margin:0 auto;max-width:15ch;text-align:center;font:700 clamp(40px,6.6vw,76px)/1.02 var(--f-head);letter-spacing:-.035em;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--glow-ink)}
+.lede{margin:22px auto 0;max-width:60ch;text-align:center;font-size:clamp(17px,1.6vw,20px);color:var(--muted)}
+.ctas{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:30px}
+.fine{margin-top:12px;text-align:center;font-size:13px;color:var(--muted)}
+.shot{margin-top:52px;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 40px 120px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.02);background:var(--panel)}
+.shot .chrome{display:flex;gap:7px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--raised)}
+.shot .chrome i{width:11px;height:11px;border-radius:50%;background:#3A3545}
+.apps{padding-block:28px 8px;text-align:center}
+.apps p{margin:0 0 12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.apps ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px}
+.apps li{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px;color:var(--fg);background:var(--panel)}
+
+section{padding-block:76px}
+.eyebrow{margin:0 0 10px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--glow-ink)}
+h2{margin:0;font:700 clamp(30px,4vw,46px)/1.06 var(--f-head);letter-spacing:-.03em;max-width:20ch;text-wrap:balance}
+.sub{margin:14px 0 0;max-width:62ch;color:var(--muted);font-size:17px}
+.promises{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:40px}
+.promise{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px}
+.promise .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--glow) 14%,transparent);color:var(--glow-ink);margin-bottom:16px}
+.promise .ico svg{width:22px;height:22px}
+.promise h3{margin:0 0 8px;font:650 21px/1.2 var(--f-head);letter-spacing:-.02em}
+.promise p{margin:0;color:var(--muted)}
+
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:40px;counter-reset:s}
+.step{position:relative;border-top:2px solid var(--line);padding-top:20px}
+.step::before{counter-increment:s;content:counter(s);position:absolute;top:-15px;left:0;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--glow);color:var(--on-glow);font:700 14px/1 var(--f-head)}
+.step h3{margin:6px 0 8px;font:650 20px/1.25 var(--f-head)}
+.step p{margin:0;color:var(--muted)}
+.step code{display:block;margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:13px/1.5 ui-monospace,Consolas,monospace;color:var(--fg);white-space:pre-wrap;word-break:break-word}
+
+.tour{display:grid;gap:56px;margin-top:44px}
+.feat{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:40px;align-items:center}
+.feat:nth-child(even){grid-template-columns:minmax(0,1.4fr) minmax(0,.9fr)}
+.feat:nth-child(even) .txt{order:2}
+.feat h3{margin:0 0 10px;font:650 26px/1.15 var(--f-head);letter-spacing:-.02em}
+.feat p{margin:0 0 10px;color:var(--muted)}
+.feat ul{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:4px}
+.feat img{border-radius:14px;border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+
+.privacy{background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--glow) 5%,transparent) 50%,transparent)}
+.ledger{margin-top:36px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
+.col h3{margin:0 0 12px;font:650 18px/1.2 var(--f-head)}
+.col ul{margin:0;padding-left:18px;display:grid;gap:8px;color:var(--muted)}
+.col b{color:var(--fg);font-weight:600}
+
+.faq{display:grid;gap:10px;margin-top:32px;max-width:820px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:0 20px}
+summary{cursor:pointer;list-style:none;padding:18px 0;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400;font-size:22px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin:0 0 18px;color:var(--muted)}
+
+.final{text-align:center}
+.final h2{margin:0 auto}
+.final .ctas{margin-top:26px}
+footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+footer a{color:var(--muted)}
+.copy{display:inline-flex;align-items:center;gap:8px}
+
+@media (max-width:900px){.promises,.steps,.ledger{grid-template-columns:1fr}.feat,.feat:nth-child(even){grid-template-columns:1fr}.feat:nth-child(even) .txt{order:0}nav a:not(.keep){display:none}}
+@media (max-width:520px){.bar .btn{padding:9px 12px}.hero{padding-top:48px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dl" viewBox="0 0 20 20"><path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.23 1.87.87 2.33.67.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M5 15.5V6.5A2.5 2.5 0 0 1 7.5 4h9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-move" viewBox="0 0 24 24"><path d="M4 12h14m0 0-4.5-4.5M18 12l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4.5" cy="12" r="1.8" fill="currentColor"/></symbol>
+</svg>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Aiodize home"><img src="assets/mark.svg" alt="" width="30" height="30"><span class="wm" aria-hidden="true">a<span class="i">ı<i></i></span>odize</span></a>
+    <nav aria-label="Sections"><a href="#how">How it works</a><a href="#tour">Tour</a><a href="#privacy">Privacy</a><a class="keep" href="https://github.com/ravirahul/aiodize">GitHub</a></nav>
+    <a class="btn pri" href="#download">Download</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero wrap">
+    <h1>Your brain for AI, <em>on your device.</em></h1>
+    <p class="lede">Every idea, note and piece of work your AI touches is kept on your computer and backed up. It moves with you to whichever AI you use next.</p>
+    <div class="ctas" id="download">
+      <a class="btn pri" href="https://github.com/ravirahul/aiodize/releases/latest/download/Aiodize-Setup-0.8.0.exe"><svg aria-hidden="true"><use href="#i-dl"/></svg>Download for Windows</a>
+      <a class="btn" href="https://github.com/ravirahul/aiodize"><svg aria-hidden="true"><use href="#i-gh"/></svg>View on GitHub</a>
+    </div>
+    <p class="fine">Free and open source (MIT). Version 0.8.0 · Windows 10/11 · Mac and Linux: run from source with Node.js 20+.</p>
+    <div class="shot"><div class="chrome" aria-hidden="true"><i></i><i></i><i></i></div><img src="assets/solar.jpg" width="1440" height="900" alt="Aiodize showing a studio's notes as a solar system: a workspace sun, category planets and project moons"></div>
+  </div>
+
+  <div class="apps wrap">
+    <p>Works with the AI apps you already use</p>
+    <ul><li>Claude Code</li><li>Claude Desktop</li><li>Cursor</li><li>VS Code</li><li>Windsurf</li><li>Codex CLI</li><li>Gemini CLI</li><li>LM Studio</li><li>Cline</li><li>Zed</li></ul>
+  </div>
+
+  <section class="wrap" aria-labelledby="whyH">
+    <p class="eyebrow">Why Aiodize</p>
+    <h2 id="whyH">One memory for every AI you work with</h2>
+    <p class="sub">Chats forget. Tools change. Your ideas, decisions and half-finished projects shouldn't live inside any one of them.</p>
+    <div class="promises">
+      <div class="promise"><div class="ico"><svg aria-hidden="true"><use href="#i-lock"/></svg></div><h3>On your device</h3><p>Plain Markdown files in folders you own. No account, no cloud, no tracking. It even opens in Obsidian.</p></div>
+      <div class="promise"><div class="ico"><svg aria-hidden="true"><use href="#i-copy"/></svg></div><h3>Backed up</h3><p>A daily copy of your notes, rules and AI work history to a folder you choose: another drive, a USB stick, OneDrive.</p></div>
+      <div class="promise"><div class="ico"><svg aria-hidden="true"><use href="#i-move"/></svg></div><h3>Moves with you</h3><p>Connect a new AI app and it picks up everything on its first day. Chat-only AIs get a context pack you can paste in.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="how" aria-labelledby="howH">
+    <p class="eyebrow">How it works</p>
+    <h2 id="howH">Two minutes from install to an AI that remembers</h2>
+    <div class="steps">
+      <div class="step"><h3>Install</h3><p>Run the Windows installer. Or paste the GitHub link into Claude Code, Cursor or Codex and say <i>install this</i>: it explains Aiodize and asks before doing anything.</p><code>git clone https://github.com/ravirahul/aiodize.git
+cd aiodize && node setup.js</code></div>
+      <div class="step"><h3>One-minute setup</h3><p>Five short cards: where your notes live, backups, which AI apps to connect. The last card lists exactly what will change, and that's your agreement. Every file is backed up first.</p></div>
+      <div class="step"><h3>Your AI finishes it</h3><p>Ask your AI <i>Set up Aiodize for me</i>. It looks at your folders and proposes workspaces, rules and project notes for you to accept. From then on it reads your context before it works and logs what it did after.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="tour" aria-labelledby="tourH">
+    <p class="eyebrow">A look inside</p>
+    <h2 id="tourH">See your thinking, and what your AI did with it</h2>
+    <div class="tour">
+      <div class="feat"><div class="txt"><h3>A graph you'll actually open</h3><p>Five ways to see the same notes: Neurons, Mind map, Sunburst, a 3D Globe and a Solar system. Search lights up matches, and a timeline replays your vault growing day by day.</p></div><img src="assets/globe.jpg" width="1440" height="900" loading="lazy" alt="Projects arranged on a slowly turning 3D globe, linked by arcs"></div>
+      <div class="feat"><div class="txt"><h3>Mission Control for your agents</h3><p>Every Claude Code session is matched to its project: tokens, models, skills, cost. A live feed shows every edit by you or an AI, and each one can be undone.</p><ul><li>Pick next: what's closest to done</li><li>A board with your own statuses: drag to move</li><li>A weekly digest written into your notes</li></ul></div><img src="assets/board.jpg" width="1200" height="430" loading="lazy" alt="A project board with columns Live, Live partly, Built not deployed, In progress and Parked"></div>
+      <div class="feat"><div class="txt"><h3>Rules your agents follow</h3><p>Keep work and personal apart with workspaces. Write in plain words what an AI must never touch (a client's site, your email, the browser) and Aiodize turns it into hard limits for Claude Code.</p></div><img src="assets/neurons.jpg" width="1440" height="900" loading="lazy" alt="Notes and ideas drawn as a network of neurons around a home note"></div>
+    </div>
+  </section>
+
+  <section class="privacy" id="privacy" aria-labelledby="privH">
+    <div class="wrap">
+      <p class="eyebrow">Privacy</p>
+      <h2 id="privH">Nothing to trust us with</h2>
+      <p class="sub">Aiodize runs on your computer at 127.0.0.1. There's no Aiodize server, account or analytics. Your AI apps talk to it locally.</p>
+      <div class="ledger">
+        <div class="col"><h3>What stays on your computer</h3><ul><li><b>All your notes</b>, as plain Markdown files</li><li><b>Rules, statuses and history</b> of every edit</li><li><b>Backups</b>, in the folder you choose</li><li><b>Your AI session stats</b>, read from your own logs</li></ul></div>
+        <div class="col"><h3>What leaves it</h3><ul><li><b>Project icons:</b> Aiodize fetches the small icon of each project's own website so the graph looks right. That's all.</li><li>Your AI apps work as they always do; Aiodize doesn't send anything to them that they don't ask for.</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="faqH">
+    <p class="eyebrow">Questions</p>
+    <h2 id="faqH">Good to know</h2>
+    <div class="faq">
+      <details><summary>Is it really free?</summary><p>Yes. Aiodize is open source under the MIT license. There's nothing to sign up for.</p></details>
+      <details><summary>Windows says the installer is from an unknown publisher</summary><p>The installer isn't code-signed yet, so Windows SmartScreen may warn the first time. Choose "More info", then "Run anyway". Or read the code and run it from source on GitHub.</p></details>
+      <details><summary>Does it work on Mac or Linux?</summary><p>Yes, from source: install Node.js 20 or newer, then <code>git clone</code> the repository and run <code>node setup.js</code>. Native installers for Mac and Linux are planned.</p></details>
+      <details><summary>Can I use my existing Obsidian vault?</summary><p>Yes. Aiodize finds your Obsidian vaults during setup. It reads and writes the same Markdown files, so both apps keep working side by side.</p></details>
+      <details><summary>What about ChatGPT?</summary><p>ChatGPT's apps only connect to servers on the internet, and Aiodize keeps your notes on your device. Export a context pack (Settings, Agents) and upload it to ChatGPT instead.</p></details>
+      <details><summary>How do I undo everything?</summary><p>Settings, Agents, Disconnect everything removes Aiodize from every AI app it connected, and only what it added. Your notes stay where they are: they were always just files.</p></details>
+    </div>
+  </section>
+
+  <section class="wrap final" aria-labelledby="endH">
+    <h2 id="endH">Give your AI a memory you own</h2>
+    <div class="ctas">
+      <a class="btn pri" href="https://github.com/ravirahul/aiodize/releases/latest/download/Aiodize-Setup-0.8.0.exe"><svg aria-hidden="true"><use href="#i-dl"/></svg>Download for Windows</a>
+      <a class="btn" href="https://github.com/ravirahul/aiodize"><svg aria-hidden="true"><use href="#i-gh"/></svg>Star on GitHub</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Made by Ravi Rahul at <a href="https://bliink.in">Bliink</a>. Open source, MIT license.</span>
+    <span><a href="https://github.com/ravirahul/aiodize">GitHub</a> · <a href="https://github.com/ravirahul/aiodize/blob/main/AGENTS.md">For AI assistants</a> · <a href="https://github.com/ravirahul/aiodize/issues">Report a problem</a></span>
+  </div>
+</footer>
+</body>
+</html>
